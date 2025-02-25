@@ -4,9 +4,10 @@ If you want to customize the installation, please modify the files before runnin
 Contents :
 
 - Base.sh (Installs OpenSSH Server (with configuration) and Webmin) ;
-- ConfigISP.sh (Installs ConfigISP, an open-source DHCP/DNS service) ;
+- ISPConfig.sh (Installs ConfigISP, an open-source DHCP/DNS service) ;
 - FreePBX.sh (Installs FreePBX, an open-source phone manager) ;
 - GLPI.sh (Installs GLPI, a ticketing service) ;
+- HaProxy.sh (Installs HaProxy, a High Availbility (HA) service) ;
 - MediaWiki.sh (Installs MediaWiki, an open-source wikipedia service) ;
 - Monitoring.sh (Installs Zabbix and Wazuh, useful for server monitoring) ;
 - OpenLDAP.sh (Installs OpenLDAP, an open-source Active Directory service) ;
