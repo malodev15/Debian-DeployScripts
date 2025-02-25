@@ -2,12 +2,6 @@
 
 set -e
 
-# Variables personnalisables
-db_name="roundcube"
-db_user="roundcubeuser"
-db_pass="roundcube_pass"
-domain="mail.example.com"
-
 # Chemin vers le script Web.sh
 web_script="/root/Web.sh"
 
@@ -24,55 +18,35 @@ else
     echo "Services Web déjà installés."
 fi
 
-# Configuration de la base de données pour Roundcube
-echo "Création de la base de données Roundcube..."
-mysql -e "CREATE DATABASE ${db_name} DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
-mysql -e "GRANT ALL PRIVILEGES ON ${db_name}.* TO '${db_user}'@'localhost' IDENTIFIED BY '${db_pass}';"
-mysql -e "FLUSH PRIVILEGES;"
+# Mise à jour du système
+echo "Mise à jour du système..."
+apt update && apt upgrade -y
 
-# Téléchargement et installation de Roundcube
-echo "Téléchargement de Roundcube..."
-ROUND_VERSION="1.6.7"
-wget https://github.com/roundcube/roundcubemail/releases/download/${ROUND_VERSION}/roundcubemail-${ROUND_VERSION}-complete.tar.gz
+# Installation de Roundcube et des dépendances
+echo "Installation de Roundcube..."
+apt install -y roundcube roundcube-core roundcube-mysql roundcube-plugins
 
-tar -xvzf roundcubemail-${ROUND_VERSION}-complete.tar.gz -C /var/www/
-mv /var/www/roundcubemail-${ROUND_VERSION} /var/www/roundcube
+# Configuration de la base de données Roundcube
+DB_NAME="roundcube"
+DB_USER="roundcube"
+DB_PASS="RoundcubePass"
+
+# Création de la base de données si elle n'existe pas
+if ! mysql -e "USE $DB_NAME" &>/dev/null; then
+    echo "Création de la base de données pour Roundcube..."
+    mysql -e "CREATE DATABASE $DB_NAME;"
+    mysql -e "CREATE USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';"
+    mysql -e "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'localhost';"
+    mysql -e "FLUSH PRIVILEGES;"
+    mysql $DB_NAME < /usr/share/roundcube/SQL/mysql.initial.sql
+fi
 
 # Configuration d'Apache pour Roundcube
 echo "Configuration d'Apache pour Roundcube..."
-cat <<EOL > /etc/apache2/sites-available/roundcube.conf
-<VirtualHost *:80>
-    ServerName ${domain}
-    DocumentRoot /var/www/roundcube
-
-    <Directory /var/www/roundcube>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    ErrorLog \${APACHE_LOG_DIR}/roundcube_error.log
-    CustomLog \${APACHE_LOG_DIR}/roundcube_access.log combined
-</VirtualHost>
-EOL
-
-a2ensite roundcube.conf
-a2enmod rewrite
+ln -s /etc/roundcube/apache.conf /etc/apache2/conf-enabled/roundcube.conf
 systemctl reload apache2
 
-# Configuration de Roundcube
-echo "Configuration de Roundcube..."
-cp /var/www/roundcube/config/config.inc.php.sample /var/www/roundcube/config/config.inc.php
-
-sed -i "s/\$config\['db_dsnw'\] = '.*';/\$config['db_dsnw'] = 'mysql:\/\/${db_user}:${db_pass}@localhost\/${db_name}';/" /var/www/roundcube/config/config.inc.php
-
-# Initialisation de la base de données Roundcube
-mysql ${db_name} < /var/www/roundcube/SQL/mysql.initial.sql
-
-# Permissions
-echo "Ajustement des permissions..."
-chown -R www-data:www-data /var/www/roundcube
-
 # Finalisation
-echo "Installation de Roundcube terminée !"
-echo "Accédez à : http://${domain}"
+echo "Installation et configuration de Roundcube terminées !"
+echo "Accédez à l'interface : http://$(hostname -I | awk '{print $1}')/roundcube"
+echo "Base de données : $DB_NAME / Utilisateur : $DB_USER / Mot de passe : $DB_PASS"
