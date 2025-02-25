@@ -1,18 +1,19 @@
-This scripts are completely automated, so no action are required during the installation.
-If you want to customize the installation, please modify the files before running the scripts, because there won't be any return possible after !
+This scripts are completely automated, so no action are required during the installation (you will still have to customize the script to your use case).
 
 Contents :
 
 - Base.sh (Installs OpenSSH Server (with configuration) and Webmin) ;
-- ConfigISP.sh (Installs ConfigISP, an open-source DHCP/DNS service) ;
 - FreePBX.sh (Installs FreePBX, an open-source phone manager) ;
-- GLPI.sh (Installs GLPI, a ticketing service) ;
+- GLPI.sh (Installs GLPI, an open-source ticketing service) ;
+- HaProxy.sh (Installs HaProxy, an open-source High Availbility (HA) service) ;
+- ISPConfig.sh (Installs ConfigISP, an open-source DHCP/DNS service) ;
 - MediaWiki.sh (Installs MediaWiki, an open-source wikipedia service) ;
 - Monitoring.sh (Installs Zabbix and Wazuh, useful for server monitoring) ;
 - OpenLDAP.sh (Installs OpenLDAP, an open-source Active Directory service) ;
-- Roundcube.sh (Installs Roundcube, an open-source mail server) ;
+- Postfix.sh (Installs Portfix, an open-source mail service) ;
+- Roundcube.sh (Installs Roundcube, an open-source mail client) ;
 - Samba.sh (Installs Samba, an open-source file server) ;
-- Web.sh (Installs AMP Suite, So Apache2, PHP, MariaDB Server, plus PHPmyAdmin) ;
+- Web.sh (Installs AMP Suite : Apache2, PHP, MariaDB Server, plus PHPmyAdmin) ;
 
 PS : Everything has been tested beforehand. 
 In case something goes wrong, please create an issue on GitHub : https://github.com/malodev15/issues
