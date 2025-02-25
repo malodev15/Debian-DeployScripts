@@ -36,7 +36,7 @@ apt install -y zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix
 # Configuration de la base de données Zabbix
 DB_NAME="zabbix"
 DB_USER="zabbix"
-DB_PASS="ZabbixPass"
+DB_PASS="zabbix"
 
 if ! mysql -e "USE $DB_NAME" &>/dev/null; then
     echo "Création de la base de données pour Zabbix..."
@@ -66,15 +66,15 @@ curl -sO https://packages.wazuh.com/4.11/config.yml
 cat ./config.yml <<EOL
 nodes:
   indexer:
-    - name: node-1
+    - name: test
       ip: "127.0.0.1"
 
   server:
-    - name: wazuh-1
+    - name: test
       ip: "127.0.0.1"
 
   dashboard:
-    - name: dashboard
+    - name: test
       ip: "127.0.0.1"
 EOL
 
