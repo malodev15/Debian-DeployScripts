@@ -4,8 +4,8 @@ Contents :
 
 - Base.sh (Installs OpenSSH Server (with configuration) and Webmin) ;
 - FreePBX.sh (Installs FreePBX, an open-source phone manager) ;
-- GLPI.sh (Installs GLPI, a ticketing service) ;
-- HaProxy.sh (Installs HaProxy, a High Availbility (HA) service) ;
+- GLPI.sh (Installs GLPI, an open-source ticketing service) ;
+- HaProxy.sh (Installs HaProxy, an open-source High Availbility (HA) service) ;
 - ISPConfig.sh (Installs ConfigISP, an open-source DHCP/DNS service) ;
 - MediaWiki.sh (Installs MediaWiki, an open-source wikipedia service) ;
 - Monitoring.sh (Installs Zabbix and Wazuh, useful for server monitoring) ;
