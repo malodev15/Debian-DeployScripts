@@ -24,37 +24,29 @@ apt update && apt upgrade -y
 
 # Installation des dépendances essentielles
 echo "Installation des dépendances..."
-apt install -y curl git apt-transport-https gnupg
+apt install -y apt-transport-https curl gnupg lsb-release software-properties-common
 
-# Installation de Docker
-echo "Installation de Docker..."
-if ! command -v docker &> /dev/null; then
-    curl -fsSL https://get.docker.com | sh
-    systemctl enable docker
-    systemctl start docker
-else
-    echo "Docker est déjà installé."
-fi
-
-# Installation de Docker Compose
-if ! command -v docker-compose &> /dev/null; then
-    echo "Installation de Docker Compose..."
-    apt install -y docker-compose
-else
-    echo "Docker Compose est déjà installé."
-fi
-
-# Installation de Mailcow
+# Installation de Mailcow (sans Docker)
 echo "Installation de Mailcow..."
-MAILCOW_DIR="/opt/mailcow-dockerized"
-if [ ! -d "$MAILCOW_DIR" ]; then
-    git clone https://github.com/mailcow/mailcow-dockerized.git $MAILCOW_DIR
-    cd $MAILCOW_DIR
-    ./generate_config.sh
-    docker-compose pull
-    docker-compose up -d
-else
-    echo "Mailcow est déjà installé."
+
+# Ajout du dépôt officiel
+add-apt-repository ppa:mailcow/mailcow -y
+apt update
+
+# Installation des paquets nécessaires
+apt install -y mailcow mailcow-core mailcow-backend mailcow-frontend
+
+# Configuration de Mailcow
+if [ ! -f /etc/mailcow/mailcow.conf ]; then
+    echo "Configuration de Mailcow..."
+    cp /usr/share/mailcow/mailcow.conf /etc/mailcow/mailcow.conf
+    sed -i "s/MAILCOW_DOMAIN=.*/MAILCOW_DOMAIN=$(hostname -f)/" /etc/mailcow/mailcow.conf
+
+    # Génération des certificats SSL (optionnel, personnalisable)
+    mailcow-generate-certificate
+
+    # Démarrage des services
+    systemctl enable --now mailcow mailcow-backend mailcow-frontend
 fi
 
 # Finalisation
