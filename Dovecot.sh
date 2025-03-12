@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eor schools
 
 # Mise à jour du système
 echo "Mise à jour du système..."
